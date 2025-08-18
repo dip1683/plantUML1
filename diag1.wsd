@@ -1,0 +1,51 @@
+@startuml my simple order request 
+
+actor "Web User" as WebUser
+participant "Front End" as Portal 
+participant Gateway
+participant "Identity \nServer" as IDServer #Yellow
+participant "Rest Api" as RestApi
+database OrderDatabase 
+entity "External \nShipping Service" as ExternalShippingService
+
+
+WebUser -> Portal ++ : Orders Reqest
+group Step : Authentication
+    Portal -> Gateway ++ : GET /api/v1/orders\n Bearer Token
+    Gateway -> IDServer ++ : Authenticate Token 
+    IDServer --> IDServer : Validate \nToken
+    IDServer -[#Green]> Gateway : Success, \nToken Validated
+    
+    
+else Authentication Failed
+    IDServer -[#Red]> Gateway -- : Request Failed
+    Gateway -[#Red]> Portal -- : Authentication Failure
+    Portal -[#Red]> WebUser : Login Again
+    note right : Authentication has failed
+
+end
+
+group Call Order API
+    Gateway -> RestApi ++: GET api/v1/orders
+    RestApi --[#Blue]> RestApi : Do some \nvalidation
+    
+    group Database Interaction
+        RestApi -> OrderDatabase ++: Query Orders
+        OrderDatabase -> RestApi --: Orders
+    end
+
+    'loop
+    loop Find Shipping Status 
+        RestApi -> ExternalShippingService ++ : Find Shipping status
+        ExternalShippingService ->RestApi -- : Return Shipping Status
+    end
+
+    RestApi -> Portal --: Order Details
+
+
+end
+
+Portal -> WebUser -- : Order Response
+ 
+
+@enduml
