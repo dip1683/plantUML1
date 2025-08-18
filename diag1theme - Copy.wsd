@@ -1,0 +1,63 @@
+@startuml my simple order request 
+
+'skinparam Handwritten true
+!theme blueprint
+
+header //Lets code a plantUML diagram
+footer Page %page% of %lastpage%
+title "Orders Flow Diagram"
+
+actor "Web User" as WebUser
+participant "Front End" as Portal 
+participant Gateway
+participant "Identity \nServer" as IDServer #Yellow
+participant "Rest Api" as RestApi
+database OrderDatabase 
+entity "External \nShipping Service" as ExternalShippingService
+
+autonumber
+WebUser -> Portal ++ : Orders Reqest
+group Step : Authentication
+    Portal -> Gateway ++ : GET /api/v1/orders\n Bearer Token
+    Gateway -> IDServer ++ : Authenticate Token 
+    IDServer --> IDServer : Validate \nToken
+    IDServer -[#Green]> Gateway : Success, \nToken Validated
+    
+    
+else Authentication Failed
+    autonumber 5
+    IDServer -[#Red]> Gateway -- : Request Failed
+    Gateway -[#Red]> Portal -- : Authentication Failure
+    Portal -[#Red]> WebUser : Login Again
+    note right : Authentication has failed
+
+end
+
+autonumber 6
+group Call Order API
+    Gateway -> RestApi ++: GET api/v1/orders
+    RestApi --[#Blue]> RestApi : Do some \nvalidation
+    
+    group Database Interaction
+        autonumber 8.1
+        RestApi -> OrderDatabase ++: Query Orders
+        OrderDatabase -> RestApi --: Orders
+    end
+
+    'loop
+    autonumber inc
+    loop Find Shipping Status 
+        RestApi -> ExternalShippingService ++ : Find Shipping status
+        ExternalShippingService ->RestApi -- : Return Shipping Status
+    end
+
+    autonumber 10
+    RestApi -> Portal --: Order Details
+
+
+end
+
+Portal -> WebUser -- : Order Response
+ 
+
+@enduml
