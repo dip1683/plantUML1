@@ -1,0 +1,67 @@
+/'
+ @startuml
+left to right direction
+
+object "Sync-Async Bridge" as SyncAsyncBridge
+object "Initiator" as Initiator
+object "PRS Unboxing" as PRSUnboxing
+object "Technical Validation 1" as TechVal1
+object "Business Validation 1" as BusVal1
+object "RTP Boxing" as RTPBoxing
+object "Submit Service" as SubmitService
+object "Core Banking Boxing" as CoreBankingBoxing
+object "Response Parser" as ResponseParser
+object "Technical Validation 2" as TechVal2
+object "Business Validation 2" as BusVal2
+
+SyncAsyncBridge --> Initiator
+Initiator --> PRSUnboxing
+PRSUnboxing --> TechVal1
+TechVal1 --> BusVal1
+BusVal1 --> RTPBoxing
+RTPBoxing --> SubmitService
+SubmitService --> SyncAsyncBridge
+RTPBoxing --> CoreBankingBoxing
+CoreBankingBoxing --> ResponseParser
+ResponseParser --> TechVal2
+TechVal2 --> BusVal2
+
+@enduml 
+'/
+
+@startuml
+left to right direction
+
+start
+:sync-async bridge;
+:initiator;
+:PRS unboxing;
+:technical validation 1;
+:business validation 1;
+:RTP boxing;
+:submit service;
+:sync-async bridge;
+
+:RTP boxing;
+:core banking boxing;
+:response parser;
+:technical validation 2;
+:business validation 2;
+stop
+
+' Main sequence
+:sync-async bridge; --> :initiator;
+:initiator; --> :PRS unboxing;
+:PRS unboxing; --> :technical validation 1;
+:technical validation 1; --> :business validation 1;
+:business validation 1; --> :RTP boxing;
+:RTP boxing; --> :submit service;
+:submit service; --> :sync-async bridge;
+
+' Branch to core banking
+:RTP boxing; --> :core banking boxing;
+:core banking boxing; --> :response parser;
+:response parser; --> :technical validation 2;
+:technical validation 2; --> :business validation 2;
+
+@enduml
