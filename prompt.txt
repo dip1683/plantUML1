@@ -1,0 +1,58 @@
+create a plantuml component diagram "left to right" with the following tasks 
+
+sync-async bridge 
+initiator 
+PRS unboxing 
+technical validation 1 
+business validation 1
+RTP boxing 
+submit service 
+core banking boxing 
+response parser 
+technical validation 2
+business validation 2
+
+with task sequence as below 
+
+sync-async bridge -> initiator 
+initiator  -> PRS unboxing
+PRS unboxing -> technical validation 
+technical validation -> business validation 
+business validation -> RTP boxing 
+RTP boxing -> submit service 
+submit service -> sync-async bridge 
+RTP boxing -> core banking boxing 
+core banking boxing -> response parser
+response parser -> technical validation 2
+technical validation 2 -> business validation 2
+ 
+
+
+create a plantuml activity diagram "left to right" with the following tasks 
+
+sync-async bridge 
+initiator 
+PRS unboxing 
+technical validation 1 
+business validation 1
+RTP boxing 
+submit service 
+core banking boxing 
+response parser 
+technical validation 2
+business validation 2
+
+with task sequence as below 
+
+sync-async bridge -> initiator 
+initiator  -> PRS unboxing
+PRS unboxing -> technical validation 
+technical validation -> business validation 
+business validation -> RTP boxing 
+RTP boxing -> submit service 
+submit service -> sync-async bridge 
+RTP boxing -> core banking boxing 
+core banking boxing -> response parser
+response parser -> technical validation 2
+technical validation 2 -> business validation 2
+
